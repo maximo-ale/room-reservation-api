@@ -24,7 +24,7 @@ cp .env.example .env
 4. The '.env' file already includes a test user and a public database
 
 4. Start the server
-- npm start
+- npm run dev
 
 ## Database Reset for Demo
 
