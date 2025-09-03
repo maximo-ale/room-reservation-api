@@ -8,7 +8,7 @@ It includes authentication, role-based access control, resource management, rese
 
 1. Clone the repository
 - git clone https://github.com/maximo-ale/room-reservation-api.git
-- cd ecommerce-api
+- cd room-reservation-api
 
 2. Install dependencies
 - npm install
