@@ -7,10 +7,10 @@ export const createSchema: ZodObject<ZodRawShape> = z.object({
     attendees: z.number('Attendees must be a integer').positive('Attendees cannot be negative'),
 }).refine((data) => data.start_time < data.end_time, {
     message: 'Start time cannot be after end time',
-    path: ["endTime"],
+    path: ["end_time"],
 }).refine((data) => data.start_time > new Date(), {
     message: 'Start time must be in the future',
-    path: ["startTime"],
+    path: ["start_time"],
 });
 
 export const filterSchema: ZodObject<ZodRawShape> = z.object({

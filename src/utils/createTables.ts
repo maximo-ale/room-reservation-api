@@ -1,4 +1,5 @@
 import pool from '../config/db.js';
+
 const createTables = async() => {
     await pool.query(`
         CREATE TABLE IF NOT EXISTS users(
@@ -17,9 +18,9 @@ const createTables = async() => {
         name VARCHAR(50) NOT NULL,
         description VARCHAR(400),
         capacity INTEGER NOT NULL,
-        available BOOLEAN DEFAULT TRUE
-        )
-    `);
+        available BOOLEAN DEFAULT TRUE);
+        `
+    );
 
     await pool.query(`
         CREATE TABLE IF NOT EXISTS reservations(
