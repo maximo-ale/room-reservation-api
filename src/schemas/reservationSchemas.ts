@@ -1,22 +1,22 @@
 import { z, type ZodObject, type ZodRawShape} from 'zod';
 
 export const createSchema: ZodObject<ZodRawShape> = z.object({
-    room_id: z.string().regex(/^\d+$/, 'ID must be a positive integer').transform((val) => parseInt(val, 10)),
-    start_time: z.iso.datetime().transform((val) => new Date(val)),
-    end_time: z.iso.datetime().transform((val) => new Date(val)),
+    roomId: z.string().regex(/^\d+$/, 'ID must be a positive integer'),
+    startTime: z.iso.datetime().transform((val) => new Date(val)),
+    endTime: z.iso.datetime().transform((val) => new Date(val)),
     attendees: z.number('Attendees must be a integer').positive('Attendees cannot be negative'),
-}).refine((data) => data.start_time < data.end_time, {
+}).refine((data) => data.startTime < data.endTime, {
     message: 'Start time cannot be after end time',
-    path: ["end_time"],
-}).refine((data) => data.start_time > new Date(), {
+    path: ["endTime"],
+}).refine((data) => data.startTime > new Date(), {
     message: 'Start time must be in the future',
-    path: ["start_time"],
+    path: ["startTime"],
 });
 
 export const filterSchema: ZodObject<ZodRawShape> = z.object({
-    start_time: z.iso.datetime().transform((val) => new Date(val)).optional(),
-    end_time: z.iso.datetime().transform((val) => new Date(val)).optional(),
-    room_id: z.string().regex(/^\d+$/, 'ID must be a positive integer').transform((val) => parseInt(val, 10)).optional(),
+    startTime: z.iso.datetime().transform((val) => new Date(val)).optional(),
+    endTime: z.iso.datetime().transform((val) => new Date(val)).optional(),
+    roomId: z.string().regex(/^\d+$/, 'ID must be a positive integer').optional(),
     status: z.string().optional(),
     limit: z.string().min(1, 'Limit cannot be less than 1').max(10, 'Limit cannot be greater than 10').optional(),
     offset: z.string().min(1).optional(),
@@ -24,9 +24,9 @@ export const filterSchema: ZodObject<ZodRawShape> = z.object({
 });
 
 export const reservationIdSchema: ZodObject<ZodRawShape> = z.object({
-    reservation_id: z.string().regex(/^\d+$/, 'ID must be a positive integer').transform((val) => parseInt(val, 10)),
+    reservationId: z.string().regex(/^\d+$/, 'ID must be a positive integer'),
 });
 
 export const roomIdSchema: ZodObject<ZodRawShape> = z.object({
-    room_id: z.string().regex(/^\d+$/, 'ID must be a positive integer').transform((val) => parseInt(val, 10)),
+    roomId: z.string().regex(/^\d+$/, 'ID must be a positive integer'),
 });

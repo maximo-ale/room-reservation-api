@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 
 interface PayloadData{
-    user_id: number | string,
+    userId: string,
 }
 const createToken = (payload: PayloadData) => {
     const secret: string | undefined = process.env.JWT_SECRET;

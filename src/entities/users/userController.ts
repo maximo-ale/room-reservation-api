@@ -24,7 +24,7 @@ class UserController{
     }
 
     async getProfile(req: Request, res: Response){
-        const profile = await userService.getProfile(parseInt(req.user_id!));
+        const profile = await userService.getProfile(req.userId!);
 
         res.status(200).json({
             message: 'Profile found successfully',
@@ -33,7 +33,7 @@ class UserController{
     }
 
     async updateProfile(req: Request, res: Response){
-        const updateProfile = await userService.updateProfile(parseInt(req.user_id!), req.body);
+        const updateProfile = await userService.updateProfile(req.userId!, req.body);
 
         res.status(200).json({
             message: 'Profile updated correctly',

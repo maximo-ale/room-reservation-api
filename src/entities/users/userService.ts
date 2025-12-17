@@ -3,33 +3,12 @@ import { BadRequestError, NotFoundError } from '../../utils/errors.js';
 import userRepository from './userRepository.js';
 import bcrypt from 'bcrypt';
 
-interface UserData{
-    name: string,
-    email: string,
-    password: string,
-    role?: 'user' | 'admin',
-}
+// Interfaces
 
-interface UpdateProfile{
-    newName?: string,
-    newPassword?: string,
-    oldPassword?: string,
-}
-
-interface UserWithoutPassword{
-    id: number,
-    name: string,
-    email: string,
-    role?: string,
-}
-
-interface UserWithToken{
-    user: UserWithoutPassword,
-    token: string,
-}
+import { RegisterInterface, UserData, UserWithToken, UserWithoutPassword, UpdateProfile } from './userInterface.js';
 
 class UserService{
-    async register(data: UserData): Promise<UserWithToken>{
+    async register(data: RegisterInterface): Promise<UserWithToken>{
         const {name, email, password, role} = data;
         
         // Hash password to protect sensitive info
@@ -44,7 +23,8 @@ class UserService{
         });
 
         // Generate user token and return it
-        const token = createToken({user_id: newUser.id});
+        const token = createToken({userId: newUser.userId});
+        
         return {user: newUser, token};
     }
 
@@ -68,24 +48,32 @@ class UserService{
         }
 
         // Generate user token
-        const token = createToken({user_id: user.id});
+        const token = createToken({userId: user.userId});
         
-        return {user, token};
+        return {
+            user: {
+                userId: user.userId,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+            },
+            token,
+        };
     }
 
     // Get user profile without providing the password
-    async getProfile(user_id: number): Promise<UserWithoutPassword>{
-        const profile = await userRepository.findUserById(user_id);
+    async getProfile(userId: string): Promise<UserWithoutPassword>{
+        const profile = await userRepository.findUserById(userId);
 
         return profile;
     }
 
-    async updateProfile(user_id: number, data: UpdateProfile): Promise<UserWithoutPassword>{
+    async updateProfile(userId: string, data: UpdateProfile): Promise<UserWithoutPassword>{
         const {newName, newPassword, oldPassword} = data;
 
         const updates: {name?: string, password?: string} = {};
 
-        const user = await userRepository.findUserByIdWithPassword(user_id);
+        const user = await userRepository.findUserByIdWithPassword(userId);
         
         // Update user's name
         if (newName){
@@ -103,7 +91,7 @@ class UserService{
             updates.password = hashedPassword;
         }
 
-        const updatedProfile = await userRepository.updateProfile(user_id, updates);
+        const updatedProfile = await userRepository.updateProfile(userId, updates);
 
         if (!updatedProfile){
             throw new BadRequestError('No values given');

@@ -2,7 +2,7 @@ import express from 'express';
 
 import userRoutes from './entities/users/userRoutes.js';
 import roomRoutes from './entities/rooms/roomsRoutes.js';
-import reservationRoutes from './entities/reservations/reservationsRoutes.js';
+import reservationRoutes from './entities/reservations/reservationRoutes.js';
 import statsRoutes from './entities/stats/statsRoutes.js';
 
 import createTables from './utils/createTables.js';
