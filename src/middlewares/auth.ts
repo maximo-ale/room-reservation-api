@@ -10,11 +10,11 @@ export const auth = async(req: Request, res: Response, next: NextFunction) => {
     }
 
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET!) as {user_id: string};
-        req.user_id = decoded.user_id;
+        const decoded = jwt.verify(token, process.env.JWT_SECRET!) as {userId: string};
+        req.userId! = decoded.userId;
 
         // Check if user is from this DB
-        const possibleUser = await userRepository.findUserById(parseInt(req.user_id));
+        const possibleUser = await userRepository.findUserById(req.userId);
         if (!possibleUser) {
             throw new NotAuthorizedError('Invalid token. User is not in the DB');
         }
@@ -26,14 +26,7 @@ export const auth = async(req: Request, res: Response, next: NextFunction) => {
 }
 
 export const adminOnly = async(req: Request, res: Response, next: NextFunction) => {
-    if (!req.user_id){
-        throw new Error('!req.user_id');
-    }
-
-    const user = await userRepository.findUserById(parseInt(req.user_id));
-    if (!user){
-        throw new Error('!user');
-    }
+    const user = await userRepository.findUserById(req.userId!);
 
     if (user.role != 'admin'){
         throw new NotAuthorizedError('Not authorized. Admin only');

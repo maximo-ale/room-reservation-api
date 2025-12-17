@@ -1,39 +1,10 @@
 import pool from '../../config/db.js';
 
-interface RegisterInterface{
-    name: string,
-    email: string,
-    password: string,
-    role: string,
-}
-
-interface LoginInterface{
-    name?: string,
-    email?: string,
-}
-
-interface UpdateData{
-    name?: string,
-    password?: string,
-}
-
-interface UserData{
-    id: number,
-    name: string,
-    email: string,
-    password: string,
-    role?: 'user' | 'admin',
-}
-
-interface UserWithoutPassword{
-    id: number,
-    name: string,
-    email: string,
-    role: 'user' | 'admin',
-}
+// Interfaces
+import { RegisterInterface, LoginInterface, UpdateData, UserWithoutPassword , UserData} from './userInterface.js';
 
 class UserRepository{
-    async registerUser(data: RegisterInterface): Promise<UserData>{
+    async registerUser(data: RegisterInterface): Promise<UserWithoutPassword>{
         const {name, email, password, role} = data;
 
         const newUser = await pool.query(`
@@ -55,12 +26,12 @@ class UserRepository{
         return user.rows[0];
     }
 
-    async updateProfile(user_id: number, data: UpdateData): Promise<UserWithoutPassword | null>{
+    async updateProfile(userId: string, data: UpdateData): Promise<UserWithoutPassword | null>{
         const {name, password} = data;
 
         // Define fields to update with their respective values
         let fields: string[] = [];
-        let values: any[] = [user_id];
+        let values: any[] = [userId];
 
         let idx: number = 2;
 
@@ -96,17 +67,17 @@ class UserRepository{
         return allUsers.rows;
     }
 
-    async findUserById(id: number): Promise<UserWithoutPassword>{
+    async findUserById(userId: string): Promise<UserWithoutPassword>{
         const user = await pool.query(`
             SELECT * FROM users WHERE id = $1
-            `, [id]);
+            `, [userId]);
         return user.rows[0]
     } 
 
-    async findUserByIdWithPassword(id: number): Promise<UserData>{
+    async findUserByIdWithPassword(userId: string): Promise<UserData>{
         const user = await pool.query(`
             SELECT * FROM users WHERE id = $1`
-            , [id])
+            , [userId])
         return user.rows[0];
     }
 }

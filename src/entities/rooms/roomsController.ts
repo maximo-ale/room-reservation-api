@@ -21,7 +21,7 @@ class RoomController{
     }
 
     async getRoomDetails(req: Request, res: Response){
-        const roomDetails = await roomsService.getRoomDetails(parseInt(req.params.room_id!));
+        const roomDetails = await roomsService.getRoomDetails(req.params.roomId);
 
         res.status(200).json({
             message: 'Room details found successfully',
@@ -30,7 +30,7 @@ class RoomController{
     }
 
     async updateRoom(req: Request, res: Response){
-        const updatedRoom = await roomsService.updateRoom(parseInt(req.params.room_id!), req.body);
+        const updatedRoom = await roomsService.updateRoom(req.params.roomId, req.body);
 
         res.status(200).json({
             message: 'Room updated successfully',
@@ -39,7 +39,7 @@ class RoomController{
     }
 
     async deleteRoom(req: Request, res: Response){
-        const deletedRoom = await roomsService.deleteRoom(parseInt(req.params.room_id!));
+        const deletedRoom = await roomsService.deleteRoom(req.params.roomId);
 
         res.status(200).json({
             message: 'Room deleted successfully',

@@ -1,23 +1,7 @@
 import pool from "../../config/db.js";
 
-interface RoomData{
-    name: string,
-    description?: string,
-    capacity: number,
-    available?: boolean,
-}
-
-interface SimplifiedRoomData{
-    id: number,
-    name: string,
-}
-
-interface UpdateRoomData{
-    name?: string,
-    description?: string,
-    capacity?: number,
-    available?: boolean,
-}
+// Interfaces
+import { RoomData, UpdateRoomData, SimplifiedRoomData} from './roomsInterfaces.js';
 
 
 class RoomRepository{
@@ -40,18 +24,18 @@ class RoomRepository{
         return allRooms.rows;
     }
 
-    async getRoomById(room_id: number): Promise<RoomData>{
+    async getRoomById(roomId: string): Promise<RoomData>{
         const roomDetails = await pool.query(`
             SELECT * FROM rooms WHERE id = $1;
-            `, [room_id]);
+            `, [roomId]);
         return roomDetails.rows[0];
     }
 
-    async updateRoom(room_id: number, data: UpdateRoomData): Promise<RoomData | null>{
+    async updateRoom(roomId: string, data: UpdateRoomData): Promise<RoomData | null>{
         const {name, description, capacity, available} = data;
         // Define fields to update with their respective values
         let fields = [];
-        let values: (string | number | boolean)[] = [room_id];
+        let values: (string | number | boolean)[] = [roomId];
         let idx = 2;
 
         if (name){
@@ -91,10 +75,10 @@ class RoomRepository{
         return updatedRoom.rows[0];
     }
 
-    async deleteRoom(room_id: number): Promise<RoomData>{
+    async deleteRoom(roomId: string): Promise<RoomData>{
         const deletedRoom = await pool.query(`
             DELETE FROM rooms WHERE id = $1 RETURNING *;
-            `, [room_id]);
+            `, [roomId]);
         
             return deletedRoom.rows[0];
     }

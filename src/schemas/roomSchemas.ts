@@ -15,8 +15,5 @@ export const updateSchema: ZodObject<ZodRawShape> = z.object({
 });
 
 export const idSchema: z.ZodObject<ZodRawShape> = z.object({
-    room_id: z
-    .string()
-    .regex(/^\d+$/, 'ID must be a positive integer')
-    .transform((val) => parseInt(val, 10)),
+    roomId: z.string().regex(/^\d+$/, 'ID must be a positive integer')
 });

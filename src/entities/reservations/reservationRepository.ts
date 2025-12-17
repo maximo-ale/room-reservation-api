@@ -1,96 +1,61 @@
 import pool from "../../config/db.js";
 
-interface ReservationDetails{
-    id: number,
-    user_id: number,
-    room_id: number,
-    start_time: Date,
-    end_time: Date,
-    attendees: number,
-    status: 'confirmed' | 'cancelled',
-    created_at: Date,
-}
+// Interfaces
+import {
+    CreateReservationData,
+    SimplifiedReservationData,
+    ReservationData,
+    ReservationFilters,
+    ReservationDetails,
+} from "./reservationInterface.js";
 
-interface CreateReservationData{
-    user_id: number,
-    room_id: number,
-    start_time: Date,
-    end_time: Date,
-    attendees: number,
-}
-
-interface ReservationData{
-    user_id: number,
-    room_id: number,
-    start_time: Date,
-    end_time: Date,
-    attendees: number,
-}
-
-interface SimplifiedReservationData{
-    id: number,
-    start_time: Date,
-    end_time: Date,
-    status: 'confirmed' | 'cancelled',
-}
-
-interface ReservationFilters{
-    start?: Date,
-    end?: Date,
-    user_id?: number,
-    room_id?: number,
-    status?: 'confirmed' | 'cancelled',
-    limit?: number,
-    offset?: number,
-    sort?: 'oldest' | 'newest',
-}
 class ReservationsRepository{
-    async getReservationById(id: number): Promise<ReservationData>{
+    async getReservationById(reservationId: string): Promise<ReservationData>{
         const reservation = await pool.query(`
             SELECT * FROM reservations WHERE id = $1;
-            `, [id]);
+            `, [reservationId]);
         return reservation.rows[0];
     }
     
     async createReservation(data: CreateReservationData): Promise<ReservationDetails>{
-        const {user_id, room_id, start_time, end_time} = data;
+        const { userId, roomId, startTime, endTime } = data;
 
         // Create reservation with the current time
         const newReservation = await pool.query(`
             INSERT INTO reservations (user_id, room_id, start_time, end_time, status, created_at)
             VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;
-            `, [user_id, room_id, start_time, end_time, 'confirmed', new Date()]);
+            `, [userId, roomId, startTime, endTime, 'confirmed', new Date()]);
 
         return newReservation.rows[0];
     }
 
-    async getReservations(user_id: number): Promise<SimplifiedReservationData[]>{
+    async getReservations(userId: string): Promise<SimplifiedReservationData[]>{
         const getReservations = await pool.query(`
             SELECT (id, start_time, end_time) FROM reservations WHERE user_id = $1
-            `, [user_id]);
+            `, [userId]);
 
         return getReservations.rows;
     }
     
-    async getReservationDetails(reservation_id: number): Promise<ReservationData>{
+    async getReservationDetails(reservationId: string): Promise<ReservationData>{
         const reservationDetails = await pool.query(`
             SELECT * FROM reservations WHERE id = $1
-            `, [reservation_id]);
+            `, [reservationId]);
         return reservationDetails.rows[0];
     }
     
-    async cancelReservation(reservation_id: number): Promise <ReservationData>{
+    async cancelReservation(reservationId: string): Promise <ReservationData>{
         const reservationToCancel = await pool.query(`
             UPDATE reservations SET status = 'cancelled' WHERE id = $1 RETURNING *;
-            `, [reservation_id]);
+            `, [reservationId]);
 
         return reservationToCancel.rows[0];
     }
 
-    async getRoomReservations(room_id: number): Promise<SimplifiedReservationData[]>{
+    async getRoomReservations(roomId: string): Promise<SimplifiedReservationData[]>{
         const roomReservations = await pool.query(`
             SELECT * FROM reservations WHERE room_id = $1;
-            `, [room_id]);
+            `, [roomId]);
 
         return roomReservations.rows;
     }
@@ -111,14 +76,14 @@ class ReservationsRepository{
             values.push(filter.end);
             idx++
         }
-        if (filter.user_id){
+        if (filter.userId){
             filters.push(`user_id = $${idx}`);
-            values.push(filter.user_id);
+            values.push(filter.userId);
             idx++
         }
-        if (filter.room_id){
+        if (filter.roomId){
             filters.push(`room_id = $${idx}`);
-            values.push(filter.room_id);
+            values.push(filter.roomId);
             idx++
         }
         if (filter.status){

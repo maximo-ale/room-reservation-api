@@ -3,7 +3,7 @@ import reservationsService from './reservationsService.js';
 
 class ReservationsController{
     async createReservation(req: Request, res: Response){
-        const newReservation = await reservationsService.createReservation(parseInt(req.user_id!), req.body);
+        const newReservation = await reservationsService.createReservation(req.userId!, req.body);
         res.status(201).json({
             message: 'Reservation created successfully',
             newReservation,
@@ -11,7 +11,7 @@ class ReservationsController{
     }
 
     async getReservations(req: Request, res: Response){
-        const reservations = await reservationsService.getReservations(parseInt(req.user_id!));
+        const reservations = await reservationsService.getReservations(req.userId!);
 
         res.status(200).json({
             message: 'User reservations found successfully',
@@ -20,7 +20,7 @@ class ReservationsController{
     }
 
     async getReservationDetails(req: Request, res: Response){
-        const reservationDetails = await reservationsService.getReservationDetails(parseInt(req.params.reservation_id!), parseInt(req.user_id!));
+        const reservationDetails = await reservationsService.getReservationDetails(req.reservationId!, req.userId!);
 
         res.status(200).json({
             message: 'Reservation details found successfully',
@@ -29,7 +29,7 @@ class ReservationsController{
     }
 
     async cancelReservation(req: Request, res: Response){
-        const cancelledReservation = await reservationsService.cancelReservation(parseInt(req.params.reservation_id!), parseInt(req.user_id!));
+        const cancelledReservation = await reservationsService.cancelReservation(req.reservationId!, req.userId!);
 
         res.status(200).json({
             message: 'Reservation cancelled successfully',
@@ -38,7 +38,7 @@ class ReservationsController{
     }
 
     async getRoomReservations(req: Request, res: Response){
-        const roomReservations = await reservationsService.getRoomReservations(parseInt(req.params.room_id!));
+        const roomReservations = await reservationsService.getRoomReservations(req.params.roomId!);
 
         res.status(200).json({
             message: 'Room reservations found successfully',
