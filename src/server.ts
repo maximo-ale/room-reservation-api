@@ -9,11 +9,15 @@ import createTables from './utils/createTables.js';
 import errorHandler from './middlewares/errorHandler.js';
 import resetDB from './utils/resetDB.js';
 
+import { waitForDB } from './utils/waitForDB.js';
+
 const PORT: number | string = process.env.PORT || 3000;
 
 const app = express();
 
 app.use(express.json());
+
+await waitForDB();
 
 if (process.env.RESET_DB_ON_START?.toLowerCase() === 'true'){
     await resetDB();
