@@ -1,5 +1,5 @@
 # Reservation System REST API
-A fully functional Reservation System REST API built with Node.js, TypeScript, Express, and PostgreSQL.  
+A fully functional Reservation System REST API built with Node.js, TypeScript, Docker, Express, and PostgreSQL.  
 It includes authentication, role-based access control, resource management, reservation handling, availability checks, statistics, error handling, and testing.
 
 ---
@@ -72,6 +72,7 @@ This ensures each recruiter or tester starts with a clean environment.
 - JWT for authentication  
 - Zod 
 - bcrypt (password hashing)  
+- Docker
 
 ## Project Structure
 - /config --> DB connection
